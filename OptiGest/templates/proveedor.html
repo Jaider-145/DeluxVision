@@ -1,0 +1,192 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proveedores</title>
+    <link rel="stylesheet" href="{% static 'OptiGest/cliente.css' %}">
+    <style>
+        .controles-clientes {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .boton-control {
+            display: flex;
+            align-items: center;
+            padding: 5px 10px;
+            background-color: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .boton-control ion-icon {
+            margin-right: 5px;
+        }
+
+        .buscador {
+            display: flex;
+            align-items: center;
+        }
+
+        .buscador input {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu">
+        <ion-icon name="menu-outline"></ion-icon>
+        <ion-icon name="close-outline"></ion-icon>
+    </div>
+
+    <div class="barra-lateral">
+        <div>
+            <div class="nombre-pagina">
+                <ion-icon id="cloud" name="cloud-outline"></ion-icon>
+                <span>DeluxVision</span>
+            </div>
+            <button class="boton" id="newClientButton">
+                <ion-icon name="add-outline"></ion-icon>
+                <span>Cliente</span>
+            </button>
+            <button class="boton" id="newProviderButton">
+                <ion-icon name="add-outline"></ion-icon>
+                <span>Proveedor</span>
+            </button>
+        </div>
+
+        <nav class="navegacion">
+            <ul>
+                <li>
+                    <a href="{% url 'inicio' %}">
+                        <ion-icon name="person-outline"></ion-icon>
+                        <span>Menu</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'vista_cliente' %}">
+                        <ion-icon name="person-outline"></ion-icon>
+                        <span>Clientes</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'vista_proveedor' %}">
+                        <ion-icon name="people-outline"></ion-icon>
+                        <span>Proveedores</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'vista_papelera' %}">
+                        <ion-icon name="folder-open-outline"></ion-icon>
+                        <span>Papelera</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>  
+        <div>
+            <div class="linea"></div>
+            <div class="modo-oscuro">
+                <div class="info">
+                    <ion-icon name="moon-outline"></ion-icon>
+                    <span>Dark Mode</span>
+                </div>
+                <div class="switch">
+                    <input type="checkbox" id="darkModeToggle">
+                    <label for="darkModeToggle" class="base">
+                        <div class="circulo"></div>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <h1 class="titulo-clientes">Proveedores</h1>
+        
+        <!-- Controles para Organizar y Buscar -->
+        <div class="controles-clientes">
+            <button id="organizarButton" class="boton-control">
+                <ion-icon name="funnel-outline"></ion-icon>
+                <span>Organizar</span>
+            </button>
+            <div class="buscador">
+                <input type="text" id="buscarInput" placeholder="Buscar cliente...">
+                <button id="buscarButton" class="boton-control">
+                    <ion-icon name="search-outline"></ion-icon>
+                </button>
+            </div>
+        </div>
+
+        <div class="contenedor-clientes" id="contenedorClientes">
+            <!-- Aquí se mostrarán los clientes agregados -->
+        </div>
+    </main>
+
+    <!-- Modal de Agregar/Editar Cliente -->
+    <div id="clientModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modal-title">Agregar Cliente</h2>
+            <form id="form-agregar-cliente">
+                <div class="campo-formulario">
+                    <label for="nombre-cliente">Nombre</label>
+                    <input type="text" id="nombre-cliente" required>
+                </div>
+                <div class="campo-formulario">
+                    <label for="cedula-cliente">Cédula</label>
+                    <input type="number" id="cedula-cliente" required>
+                </div>
+                <div class="campo-formulario">
+                    <label for="telefono-cliente">Teléfono</label>
+                    <input type="number" id="telefono-cliente" required>
+                </div>
+                <div class="campo-formulario">
+                    <label for="fecha-cliente">Fecha de Registro</label>
+                    <input type="date" id="fecha-cliente" required>
+                </div>
+                <div class="campo-formulario">
+                    <label for="formula-medica">Fórmula Médica</label>
+                    <textarea id="formula-medica" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="boton-agregar">Guardar</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal de Agregar Proveedor -->
+    <div id="providerModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Agregar Proveedor</h2>
+            <form id="form-agregar-proveedor">
+                <div class="campo-formulario">
+                    <label for="nombre-proveedor">Nombre</label>
+                    <input type="text" id="nombre-proveedor" required>
+                </div>
+                <div class="campo-formulario">
+                    <label for="telefono-proveedor">Teléfono</label>
+                    <input type="tel" id="telefono-proveedor" required>
+                </div>
+                <div class="campo-formulario">
+                    <label for="producto-proveedor">Producto</label>
+                    <input type="text" id="producto-proveedor" required>
+                </div>
+                <button type="submit" class="boton-agregar">Guardar</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="{% static 'OptiGest/cliente.js' %}"></script>
+</body>
+</html>
